@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Risk Management Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet"> <!-- Patrick Hand Font -->
+    <style>
+        /* Basic reset and body styling */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #74ebd5, #acb6e5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* Container styling */
+        .container {
+            max-width: 600px;
+            width: 100%;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .logo {
+            width: 100px;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            color: #1a8cff;
+            margin-bottom: 20px;
+        }
+
+        /* Input styling */
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #1a8cff;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #ff5722;
+        }
+
+        /* Button styling */
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #1a8cff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #006BFF; /* Updated hover color */
+        }
+
+        /* Result styling */
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e1f5fe;
+            border: 1px solid #1a8cff;
+            border-radius: 5px;
+            color: #007bb5;
+            font-weight: bold;
+        }
+
+        /* Discord Button styling with bounce animation */
+        .discord-cta {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #7289da;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+            animation: bounceButton 3s ease-in-out infinite;
+        }
+
+        .discord-cta:hover {
+            background-color: #7E60BF; /* Discord hover color */
+        }
+
+        /* Keyframes for bounce animation */
+        @keyframes bounceButton {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Promo text styling with Patrick Hand font */
+        .promo-text {
+            font-family: 'Patrick Hand', cursive; /* Use Patrick Hand font */
+            font-size: 22px; /* Increase font size for emphasis */
+            color: #333;
+            text-align: left; /* Left align the text */
+            margin-top: 20px; /* Space above the text */
+            quotes: "“" "”"; /* Set quotes for the text */
+        }
+
+        .promo-text::before {
+            content: open-quote; /* Add opening quote */
+        }
+
+        .promo-text::after {
+            content: close-quote; /* Add closing quote */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <img src="https://res.cloudinary.com/dzt3tudwf/image/upload/v1730103002/435888818_122113965770263446_4043677921951462990_n-removebg-preview_rdqhem.png" alt="Logo" class="logo">
+    <h1>Stock Risk Management Calculator</h1>
+    <form id="riskForm">
+        <div class="input-group">
+            <label for="totalCapital">Total Capital (PKR):</label>
+            <input type="number" id="totalCapital" step="0.01" required>
+        </div>
+        <div class="input-group">
+            <label for="buyPrice">Buy Price per Share (PKR):</label>
+            <input type="number" id="buyPrice" step="0.01" required>
+        </div>
+        <div class="input-group">
+            <label for="stopLossPrice">Stop Loss Price per Share (PKR):</label>
+            <input type="number" id="stopLossPrice" step="0.01" required>
+        </div>
+        <div class="input-group">
+            <label for="riskPercentage">Risk Percentage per Trade (%):</label>
+            <input type="number" id="riskPercentage" step="0.1" required>
+        </div>
+        <button type="submit">Calculate Shares to Buy</button>
+    </form>
+    <div id="result" class="result"></div>
+
+    <div class="discord-invite">
+        <p class="promo-text">
+            Want to access high-probability trade ideas for the Pakistan stock market? 
+            Join our exclusive Discord community to start earning passive income with expert-guided trades and insights tailored for success. 
+        </p>
+        <a href="https://discord.com/invite/nbR94GCUZs" target="_blank" class="discord-cta">
+            Join Our Discord Group Now
+        </a>
+    </div>
+    
+    <footer>
+        &copy; 2024 Baydaar Capital Club Risk Management Tool. All rights reserved.
+    </footer>
+</div>
+
+<script>
+document.getElementById('riskForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    // Get user inputs
+    const totalCapital = parseFloat(document.getElementById('totalCapital').value);
+    const buyPrice = parseFloat(document.getElementById('buyPrice').value);
+    const stopLossPrice = parseFloat(document.getElementById('stopLossPrice').value);
+    const riskPercentage = parseFloat(document.getElementById('riskPercentage').value);
+
+    // Calculate the risk per share and the total risk allowed
+    const riskPerShare = buyPrice - stopLossPrice;
+    const riskAmount = totalCapital * (riskPercentage / 100);
+
+    // Calculate the number of shares to buy and their worth
+    const sharesToBuy = Math.floor(riskAmount / riskPerShare);
+    const totalInvestment = sharesToBuy * buyPrice;
+    const capitalUtilization = (totalInvestment / totalCapital) * 100;
+
+    // Display results
+    document.getElementById('result').innerHTML = `
+        Number of Shares to Buy: ${sharesToBuy} <br>
+        Total Investment Worth: PKR ${totalInvestment.toFixed(2)} <br>
+        Capital Utilization: ${capitalUtilization.toFixed(2)}%
+    `;
+});
+</script>
+
+</body>
+</html>
